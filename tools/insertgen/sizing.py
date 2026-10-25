@@ -72,7 +72,8 @@ def plan_trays(game: Game, rules: Rules) -> list[TrayPlan]:
                 x, y, z = c.xyz
                 if z > depth:
                     raise ValueError(f"{c.id}: {z} mm tall, only {depth:.1f} mm usable")
-                wells.append(Well(c.id, "object", x + 2 * rules.clearance, y + 2 * rules.clearance, z))
+                wells += [Well(c.id if c.count == 1 else f"{c.id}#{i + 1}", "object",
+                               x + 2 * rules.clearance, y + 2 * rules.clearance, z) for i in range(c.count)]
             else:
                 wells += _stack_wells(game, ids, rules, depth)
         w = 2 * rules.wall + sum(x.x for x in wells) + rules.divider * (len(wells) - 1)

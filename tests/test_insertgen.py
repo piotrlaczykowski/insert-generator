@@ -44,6 +44,7 @@ def test_layout_fits_box_without_overlap(raw, stretch):
         assert all((Y - w.y) / 2 >= rules.wall - 1e-6 for w in p.tray.wells)
     for a, b in combinations(layout.placements, 2):
         assert a.x + a.w <= b.x + 1e-6 or b.x + b.w <= a.x + 1e-6 or a.y + a.d <= b.y + 1e-6 or b.y + b.d <= a.y + 1e-6
+    assert len(next(p for p in layout.placements if p.tray.id == "die").tray.wells) == 2   # one well per object
     if stretch:
         assert sum(p.w * p.d for p in layout.placements) == pytest.approx(W * D)
 

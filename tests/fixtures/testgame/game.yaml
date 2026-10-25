@@ -34,6 +34,7 @@ components:
   - id: die
     name: Die
     kind: object
+    count: 2
     xyz: [16, 16, 16]
 trays:
   - {id: big, compartments: [deck_a]}
