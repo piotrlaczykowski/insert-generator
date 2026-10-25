@@ -1,0 +1,41 @@
+# Fictional game for tests. Every dimension is filled in.
+name: Test Game
+slug: testgame
+box:
+  inner_xyz: [150, 230, 48]
+  reference: {outer_xyz: [155, 236, 52], source: "made up"}
+on_top:
+  - {id: rulebook, name: Rulebook, xyz: [145, 225, 3]}
+components:
+  - id: deck_a
+    name: Big deck
+    kind: cards
+    count: 110
+    size_xy: [63, 88]
+    stack: {count: 50, height: 16.0}
+  - id: deck_b
+    name: Small deck
+    kind: cards
+    count: 30
+    size_xy: [44, 68]
+    stack: {count: 30, height: 9.0}
+  - id: deck_c
+    name: Single card
+    kind: cards
+    count: 1
+    size_xy: [44, 68]
+    stack: {count: 1, height: 0.3}
+  - id: coins
+    name: Coins
+    kind: tokens
+    count: 20
+    size_xy: [25, 25]
+    stack: {count: 10, height: 20.0}
+  - id: die
+    name: Die
+    kind: object
+    xyz: [16, 16, 16]
+trays:
+  - {id: big, compartments: [deck_a]}
+  - {id: small, compartments: [[deck_b, deck_c], coins]}
+  - {id: die, compartments: [die]}

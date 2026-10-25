@@ -1,0 +1,11 @@
+games/*/out/
+games/*/private/
+.venv/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+
+# the global gitignore hides .claude*; ship the skill, keep local settings out
+!.claude/
+.claude/*
+!.claude/skills/

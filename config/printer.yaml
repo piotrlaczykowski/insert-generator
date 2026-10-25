@@ -1,0 +1,16 @@
+name: Bambu Lab X2D
+nozzle: 0.4
+beds:
+  single_nozzle: [256, 256]
+  dual_nozzle: [235.5, 256]
+bed: single_nozzle          # which entry of `beds` trays are checked against
+
+# Design rules, mm. A game can override any of them under `rules:` in game.yaml.
+rules:
+  wall: 1.6                 # outer tray wall, 4 lines at 0.4
+  divider: 1.2              # wall between compartments of one tray, 3 lines
+  floor: 1.2
+  clearance: 0.5            # per side, component to compartment
+  box_margin: 1.0           # insert is this much smaller than the box interior in X and Y (total)
+  top_clearance: 1.0        # extra gap above the insert + items lying on top, so the lid closes
+  stretch: true             # grow trays to fill the box so they don't slide

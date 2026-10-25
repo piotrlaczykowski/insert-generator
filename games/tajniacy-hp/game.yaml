@@ -1,0 +1,54 @@
+name: Tajniacy Harry Potter
+slug: tajniacy-hp
+edition: "Polish edition of Codenames: Harry Potter"
+notes:
+  - "Contents taken from descriptions of the English edition; confirm against the Polish box."
+  - "Cards unsleeved unless stated otherwise."
+box:
+  inner_xyz: [null, null, null]
+  reference:
+    outer_xyz: [159, 239, 51]
+    source: "BGG / shop listings, outer and approximate; sanity check only"
+on_top:
+  - {id: rulebook, name: Instrukcja, xyz: [null, null, null]}
+  - {id: mission_log, name: Bloczek dzienników misji, xyz: [null, null, null]}
+components:
+  - id: code_cards
+    name: Karty kodowe
+    kind: cards
+    count: 200
+    size_xy: [null, null]
+    stack: {count: 50, height: null}
+  - id: key_cards
+    name: Karty-klucze (dwustronne)
+    kind: cards
+    count: 100
+    size_xy: [null, null]
+    stack: {count: 50, height: null}
+  - id: order_cards
+    name: Karty Zakonu Feniksa
+    kind: cards
+    count: 15
+    size_xy: [null, null]
+    stack: {count: 15, height: null}
+  - id: death_eater_card
+    name: Karta zakrywająca Śmierciożercy
+    kind: cards
+    count: 1
+    size_xy: [null, null]
+    stack: {count: 1, height: null}
+  - id: time_turners
+    name: Żetony Zmieniacza Czasu
+    kind: tokens
+    count: 12
+    size_xy: [null, null]
+    stack: {count: 12, height: null}
+  - id: key_stand
+    name: Podstawka na kartę-klucz
+    kind: object
+    xyz: [null, null, null]
+trays:
+  - {id: codes, name: Karty kodowe, compartments: [code_cards]}
+  - {id: keys, name: Karty-klucze, compartments: [key_cards]}
+  - {id: setup, name: Zakon + Śmierciożerca + żetony, compartments: [[order_cards, death_eater_card], time_turners]}
+  - {id: stand, name: Podstawka, compartments: [key_stand]}

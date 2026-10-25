@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      OPENSCAD_VERSION: "2026.10.11"   # nightly; the last stable (2021.01) has no Manifold backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"      # lowest supported version
+
+      - name: Install OpenSCAD
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -yq xvfb libgl1 libegl1 libglu1-mesa
+          curl -fsSL -o openscad.AppImage \
+            "https://files.openscad.org/snapshots/OpenSCAD-${OPENSCAD_VERSION}-x86_64.AppImage"
+          chmod +x openscad.AppImage
+          ./openscad.AppImage --appimage-extract > /dev/null   # runners have no FUSE
+          echo "OPENSCAD=$PWD/squashfs-root/AppRun" >> "$GITHUB_ENV"
+          squashfs-root/AppRun --version
+
+      - run: uv sync --locked
+
+      - name: Tests (schema, layout, render)
+        run: uv run pytest -v
+
+      - name: Build games (games missing measurements print their checklist and are skipped)
+        run: |
+          for g in games/*/; do uv run insertgen build "$g" --skip-incomplete; done
+          mkdir -p build && cp -r tests/fixtures/testgame build/
+          uv run insertgen build build/testgame
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inserts
+          path: |
+            games/*/out/
+            build/*/out/
+          if-no-files-found: ignore
