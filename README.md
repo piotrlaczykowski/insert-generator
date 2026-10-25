@@ -26,6 +26,7 @@ uv run pytest
 ```sh
 uv run insertgen check games/tajniacy-hp     # what still needs measuring
 uv run insertgen build games/tajniacy-hp     # layout, insert.scad, out/{*.stl,*.3mf,*.png,report.md}
+uv run insertgen build games/tajniacy-hp --fit-test 5   # + out/fit/: 5 mm high rings to test the clearance
 ```
 
 `insert.scad` is committed; `out/` is built locally and in CI (artifact `inserts`).

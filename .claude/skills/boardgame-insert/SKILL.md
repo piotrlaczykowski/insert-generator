@@ -36,6 +36,9 @@ Requires OpenSCAD nightly on PATH (or `OPENSCAD=/path`).
    Box interior: X short side, Y long side, Z floor to the rim of the bottom part.
    Ask about sleeves. Then **stop and wait** for the numbers.
 3. **Build.** Enter measurements, run `insertgen build`. Read `out/report.md`.
+   Before the first full print, suggest `insertgen build <dir> --fit-test 5`: low rings in `out/fit/`
+   with the real wells, so the user can check the clearance with real pieces for a few grams of filament.
+   Pieces too tight or too loose → adjust `rules.clearance`, rebuild.
 4. **Review with the user.** Show the PNGs (Read the image files) and the report: fill %, free space,
    warnings (stretched solid walls, bed size, BIT physical validation). Iterate on grouping, `orientation`
    (auto / flat / upright) and `rules`, rebuild. When accepted, point the user to the `.3mf` files.

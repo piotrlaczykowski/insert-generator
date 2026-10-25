@@ -27,6 +27,8 @@ def check(game_dir: Path):
 def build(game_dir: Path,
           render: bool = typer.Option(True, help="Export STL/3MF/PNG with OpenSCAD"),
           skip_incomplete: bool = typer.Option(False, help="Exit 0 instead of 2 when measurements are missing (CI)"),
+          fit_test: float = typer.Option(0, help="Also export low rings (floor + this many mm of wall) "
+                                                  "to out/fit/ for a quick print-and-try fit check"),
           printer: Path = PRINTER):
     """game.yaml -> layout -> insert.scad -> out/ (STL, 3MF, PNG, report.md)."""
     game = load_game(game_dir / "game.yaml")
@@ -57,3 +59,16 @@ def build(game_dir: Path,
     (out / "report.md").write_text(report)
     typer.echo(report)
     typer.echo(f"Wrote {scad} and {out}/")
+
+    if fit_test > 0:
+        # Same footprint and wells, only cut down in height: checks clearance for a few grams of filament.
+        for p in layout.placements:
+            p.h = rules.floor + fit_test
+        fit = out / "fit"
+        fit.mkdir(exist_ok=True)
+        fit_scad = fit / "fit_test.scad"
+        fit_scad.write_text(render_scad(game, rules, layout, fit_scad))
+        for p in layout.placements:
+            for w in rnd.tray(fit_scad, p.tray.id, fit, views=False):
+                typer.echo(f"BIT (fit test): {w}")
+        typer.echo(f"Fit-test rings ({fit_test} mm walls) in {fit}/")

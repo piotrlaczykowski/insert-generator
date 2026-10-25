@@ -113,9 +113,9 @@ def _stl_bbox(path: Path):
 def test_rendered_trays_match_layout_exterior(tmp_path):
     game_dir = tmp_path / "testgame"
     shutil.copytree(FIXTURE, game_dir)
-    result = CliRunner().invoke(app, ["build", str(game_dir)])
+    result = CliRunner().invoke(app, ["build", str(game_dir), "--fit-test", "5"])
     assert result.exit_code == 0, result.output
-    assert "BIT:" not in result.output                      # BIT physical validation stayed quiet
+    assert "BIT" not in result.output                       # BIT physical validation stayed quiet
 
     game, rules, layout = _solve(yaml.safe_load((FIXTURE / "game.yaml").read_text()))
     out = game_dir / "out"
@@ -124,4 +124,7 @@ def test_rendered_trays_match_layout_exterior(tmp_path):
         assert [hi - lo for lo, hi in bbox] == pytest.approx(list(p.size), abs=0.01)
         assert (out / f"{p.tray.id}.3mf").stat().st_size > 0
         assert all((out / f"{p.tray.id}_{v}.png").exists() for v in render.VIEWS)
+        X, Y, _ = p.size
+        ring = _stl_bbox(out / "fit" / f"{p.tray.id}.stl")
+        assert [hi - lo for lo, hi in ring] == pytest.approx([X, Y, rules.floor + 5], abs=0.01)
     assert (out / "assembly_iso.png").exists()
