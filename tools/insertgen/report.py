@@ -23,7 +23,12 @@ def _f(v: float) -> str:
     return f"{v:.1f}"
 
 
-def build_report(game: Game, rules: Rules, layout: Layout, bit_warnings: list[str]) -> str:
+def _hm(s: int) -> str:
+    return f"{s // 3600}h {s % 3600 // 60:02d}m"
+
+
+def build_report(game: Game, rules: Rules, layout: Layout, bit_warnings: list[str],
+                 estimates: dict[str, tuple[int, float]] | None = None) -> str:
     X, Y, Z = game.box.inner_xyz
     W, D = layout.area
     lines = [
@@ -45,6 +50,11 @@ def build_report(game: Game, rules: Rules, layout: Layout, bit_warnings: list[st
     if layout.free:
         lines += ["", "Free space before stretching (x, y, w, d, layer):"]
         lines += [f"- {_f(x)}, {_f(y)}: {_f(w)} x {_f(d)} (layer {li})" for x, y, w, d, li in layout.free]
+    if estimates:
+        lines += ["", "## Print estimates (Bambu Studio)", "", "| tray | time | filament |", "|---|---|---|"]
+        lines += [f"| {t} | {_hm(s)} | {g:.0f} g |" for t, (s, g) in estimates.items()]
+        lines.append(f"| **total** | **{_hm(sum(s for s, _ in estimates.values()))}** | "
+                     f"**{sum(g for _, g in estimates.values()):.0f} g** |")
     warnings = layout.warnings + sanity(game) + [f"BIT: {w}" for w in bit_warnings]
     lines += ["", "## Warnings", ""] + ([f"- {w}" for w in warnings] or ["- none"])
     return "\n".join(lines) + "\n"

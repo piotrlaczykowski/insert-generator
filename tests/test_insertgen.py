@@ -7,7 +7,7 @@ import pytest
 import yaml
 from typer.testing import CliRunner
 
-from insertgen import render
+from insertgen import render, slicer
 from insertgen.cli import PRINTER, app
 from insertgen.model import Game, effective_rules, load_game, load_printer
 from insertgen.sizing import usable_height
@@ -128,3 +128,14 @@ def test_rendered_trays_match_layout_exterior(tmp_path):
         ring = _stl_bbox(out / "fit" / f"{p.tray.id}.stl")
         assert [hi - lo for lo, hi in ring] == pytest.approx([X, Y, rules.floor + 5], abs=0.01)
     assert (out / "assembly_iso.png").exists()
+
+
+@pytest.mark.skipif(slicer.bambu() is None or not shutil.which("openscad"), reason="needs Bambu Studio and OpenSCAD")
+def test_slice_adds_print_estimates(tmp_path):
+    game_dir = tmp_path / "testgame"
+    shutil.copytree(FIXTURE, game_dir)
+    result = CliRunner().invoke(app, ["build", str(game_dir), "--slice"])
+    assert result.exit_code == 0, result.output
+    rows = re.findall(r"^\| (\w+) \| (\d+)h (\d+)m \| (\d+) g \|$", (game_dir / "out" / "report.md").read_text(), re.M)
+    assert {r[0] for r in rows} == {"big", "small", "die"}
+    assert all(int(g) > 0 and int(h) * 60 + int(m) > 0 for _, h, m, g in rows)

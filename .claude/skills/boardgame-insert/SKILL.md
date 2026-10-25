@@ -35,7 +35,8 @@ Requires OpenSCAD nightly on PATH (or `OPENSCAD=/path`).
    mm, 0.1 precision, calipers. Card thickness comes from a stack (e.g. 50 cards pressed lightly), not one card.
    Box interior: X short side, Y long side, Z floor to the rim of the bottom part.
    Ask about sleeves. Then **stop and wait** for the numbers.
-3. **Build.** Enter measurements, run `insertgen build`. Read `out/report.md`.
+3. **Build.** Enter measurements, run `insertgen build --slice` (print time and grams per tray via the
+   Bambu Studio CLI; drop `--slice` if it isn't installed). Read `out/report.md`.
    Before the first full print, suggest `insertgen build <dir> --fit-test 5`: low rings in `out/fit/`
    with the real wells, so the user can check the clearance with real pieces for a few grams of filament.
    Pieces too tight or too loose → adjust `rules.clearance`, rebuild.
@@ -48,7 +49,7 @@ Requires OpenSCAD nightly on PATH (or `OPENSCAD=/path`).
 |---|---|
 | Cards stand on edge | component `orientation: upright` |
 | Two decks in one well | `compartments: [[deck_a, deck_b]]` |
-| Less plastic in a sparse box | `rules: {stretch: false}` |
+| Trays fill the box (costs filament: solid walls) | `rules: {stretch: true}` |
 | Thicker items on top | add them to `on_top` with measured `xyz` |
 
 ## Red flags: stop

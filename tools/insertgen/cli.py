@@ -3,6 +3,7 @@ from pathlib import Path
 import typer
 
 from . import render as rnd
+from . import slicer
 from .checklist import format_checklist, missing
 from .model import effective_rules, load_game, load_printer
 from .report import build_report
@@ -29,6 +30,7 @@ def build(game_dir: Path,
           skip_incomplete: bool = typer.Option(False, help="Exit 0 instead of 2 when measurements are missing (CI)"),
           fit_test: float = typer.Option(0, help="Also export low rings (floor + this many mm of wall) "
                                                   "to out/fit/ for a quick print-and-try fit check"),
+          slice: bool = typer.Option(False, "--slice", help="Slice each tray in Bambu Studio; add time and grams to the report"),
           printer: Path = PRINTER):
     """game.yaml -> layout -> insert.scad -> out/ (STL, 3MF, PNG, report.md)."""
     game = load_game(game_dir / "game.yaml")
@@ -55,7 +57,14 @@ def build(game_dir: Path,
         asm = out / "assembly.scad"
         asm.write_text(render_assembly(game, layout, out, asm))
         rnd.assembly(asm, out)
-    report = build_report(game, rules, layout, bit_warnings)
+    estimates = None
+    if slice:
+        if not render or prn.slicer is None:
+            typer.echo("--slice needs --render and a `slicer:` section in printer.yaml", err=True)
+            raise typer.Exit(1)
+        estimates = {p.tray.id: slicer.estimate(out / f"{p.tray.id}.3mf", prn.slicer, out / "slice" / p.tray.id)
+                     for p in layout.placements}
+    report = build_report(game, rules, layout, bit_warnings, estimates)
     (out / "report.md").write_text(report)
     typer.echo(report)
     typer.echo(f"Wrote {scad} and {out}/")

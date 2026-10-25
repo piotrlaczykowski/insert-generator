@@ -28,12 +28,21 @@ class Rules(Strict):
     stretch: bool
 
 
+class Slicer(Strict):
+    machine: str
+    process: str
+    filament: str
+    filament_diameter: PositiveFloat
+    filament_density: PositiveFloat
+
+
 class Printer(Strict):
     name: str
     nozzle: PositiveFloat
     beds: dict[str, tuple[PositiveFloat, PositiveFloat]]
     bed: str
     rules: Rules
+    slicer: Slicer | None = None
 
     @model_validator(mode="after")
     def _bed_exists(self):

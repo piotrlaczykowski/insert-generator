@@ -27,6 +27,7 @@ uv run pytest
 uv run insertgen check games/tajniacy-hp     # what still needs measuring
 uv run insertgen build games/tajniacy-hp     # layout, insert.scad, out/{*.stl,*.3mf,*.png,report.md}
 uv run insertgen build games/tajniacy-hp --fit-test 5   # + out/fit/: 5 mm high rings to test the clearance
+uv run insertgen build games/tajniacy-hp --slice        # + print time and grams per tray (Bambu Studio CLI)
 ```
 
 `insert.scad` is committed; `out/` is built locally and in CI (artifact `inserts`).
@@ -46,7 +47,8 @@ Export a single tray by hand with `openscad -D 'which="<tray id>"' -o tray.stl g
 How it works: each compartment is the measured piece plus clearance; card stacks taller than the
 usable depth are split into side-by-side stacks or stood upright, whichever uses less area. Trays are
 shelf-packed into the box interior (minus a margin), with extra height layers only when one layer is
-not enough, then optionally stretched so they don't slide. The insert top sits below the box rim by
+not enough. Optionally (`rules.stretch`) trays grow to fill the box so they don't slide; off by default
+because BIT walls are solid and a sparse box can cost several times the filament. The insert top sits below the box rim by
 the thickness of whatever lies on top plus a lid clearance.
 
 ## Games

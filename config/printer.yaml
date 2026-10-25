@@ -13,4 +13,13 @@ rules:
   clearance: 0.5            # per side, component to compartment
   box_margin: 1.0           # insert is this much smaller than the box interior in X and Y (total)
   top_clearance: 1.0        # extra gap above the insert + items lying on top, so the lid closes
-  stretch: true             # grow trays to fill the box so they don't slide
+  stretch: false            # true grows trays to fill the box, but BIT walls are solid: ~5x filament in a sparse box
+
+# `insertgen build --slice`: Bambu Studio CLI, system profiles from the app bundle.
+slicer:
+  machine: Bambu Lab X2D 0.4 nozzle
+  process: 0.20mm Standard @BBL X2D
+  filament: Bambu PLA Basic @BBL X2D 0.4 nozzle
+  # Bambu's CLI reports 0 g with system profiles, so grams come from filament length.
+  filament_diameter: 1.75
+  filament_density: 1.24    # g/cm3, PLA
